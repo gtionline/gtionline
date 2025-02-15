@@ -1,10 +1,36 @@
 <template>
   <div class="fp-exercise pageContainer">
     <div class="bodyContainer">
-      <p class="introduction">{{$t('polyConvGenIntro')}}</p>
-      <h4>{{$t('generateEx')}}</h4>
-      <button v-on:click="generateExercise">{{$t('generate')}}</button>
-      <div id="exerciseField" v-html="exerciseText"></div>
+      <p class="introduction">
+        {{ $t('polyConvGenIntro') }}
+      </p>
+      <h4>{{ $t('generateEx') }}</h4>
+      <div>
+        <div class="floatingPointInput">
+          <h5>{{ $t('randomExercise') }}:</h5>
+          <button @click="generateExercise">
+            {{ $t('generate') }}
+          </button>
+        </div>
+        <div class="floatingPointInput">
+          <h5>{{ $t('fp_from_archive') }}:</h5>
+          <FSelect
+            ref="archivedExercisesDropDownMenu"
+            :options="archivedExerciseTitles"
+            :sel="selectedArchivedExercise"
+            @input="selectArchivedExercise"
+          />
+          <div class="divMargin" />
+          <button @click="loadArchivedExercise">
+            {{ $t('load') }}
+          </button>
+        </div>
+      </div>
+      
+      <div
+        id="exerciseField"
+        v-html="exerciseText"
+      />
       <!-- <h4>{{$t('ownSolution')}}</h4>
       <div class="solutionArea">
         <div class="solutionInput">
@@ -13,28 +39,34 @@
         </div>
         <button id="checkSolution" @click="checkSolution">{{$t('check')}}</button>
       </div> -->
-      <h4>{{$t('correctSolution')}}</h4>
+      <h4>{{ $t('correctSolution') }}</h4>
       <div style="position: relative">
-        <AttentionBanner :text="$t('attSolve')"/>
+        <AttentionBanner :text="$t('attSolve')" />
         <!-- <div class="pdfGen">
           <button v-on:click="downloadPdf" v-if="this.solution">{{$t('getDescription')}}</button>
         </div> -->
       </div>
       <div id="solution">
-        <Accordion :solutionDescription="solDescr">
-          <AccordionItem v-for="panel in solDescr" v-bind:key="panel.name">
-            <template v-slot:accordion-item-title>
-              {{panel.name}}
+        <Accordion :solution-description="solDescr">
+          <AccordionItem
+            v-for="panel in solDescr"
+            :key="panel.name"
+          >
+            <template #accordion-item-title>
+              {{ panel.name }}
             </template>
-            <template v-slot:accordion-item-body>
-              <span v-html="panel.text"></span>
+            <template #accordion-item-body>
+              <span v-html="panel.text" />
               <Accordion v-if="panel.subpanels != null">
-                <AccordionItem v-for="subpanel in panel.subpanels" v-bind:key="subpanel.name">
-                  <template v-slot:accordion-item-title>
-                    {{subpanel.name}}
+                <AccordionItem
+                  v-for="subpanel in panel.subpanels"
+                  :key="subpanel.name"
+                >
+                  <template #accordion-item-title>
+                    {{ subpanel.name }}
                   </template>
-                  <template v-slot:accordion-item-body>
-                    <span v-html="subpanel.text"></span>
+                  <template #accordion-item-body>
+                    <span v-html="subpanel.text" />
                   </template>
                 </AccordionItem>
               </Accordion>
@@ -51,10 +83,12 @@
 import AttentionBanner from './AttentionBanner.vue';
 import Accordion from './EmbeddedAccordion.vue';
 import AccordionItem from './EmbeddedAccordionItem.vue';
+import FormatSelect from './FormatSelect.vue';
 import * as solution from '../scripts/polyadicSolution';
 import * as description from '../scripts/DescriptionPolyadicConversion';
 import * as pdf from '../scripts/generatePdfPolyadicConversion';
 import { formatToPower } from '../scripts/polyadicUtil';
+import { polyadicLoadArchivedExercise, polyadicGetArchivedExerciseTitles, polyadicGetExerciseIndexOfHandle } from '../scripts/polyadicArchivedExercises';
 
 export default {
   name: 'PolyadicConversionExercise',
@@ -62,6 +96,7 @@ export default {
     Accordion,
     AccordionItem,
     AttentionBanner,
+    FSelect: FormatSelect,
   },
   data() {
     return {
@@ -78,6 +113,8 @@ export default {
       back: '',
       inputNum: '',
       modus: '',
+      archivedExerciseTitles: [],
+      selectedArchivedExercise: 0,
     };
   },
   computed: {
@@ -122,6 +159,9 @@ export default {
         this.generated = true;
       }
     });
+    // Load archived exercise titles
+    this.archivedExerciseTitles = polyadicGetArchivedExerciseTitles(this.$i18n);
+    this.loadExerciseFromURL();
   },
   methods: {
     recalculate() {
@@ -231,6 +271,45 @@ export default {
       e.preventDefault();
       e.stopPropagation();
     },
+    loadArchivedExercise() {
+      const index = this.selectedArchivedExercise;
+      if (index < 0) return;
+
+      const exercise = polyadicLoadArchivedExercise(this.$i18n, index);
+      this.inputNum = exercise.data.inputNum;
+      this.selectedFormat = [exercise.data.fromFormat, exercise.data.toFormat];
+      this.power = [
+        formatToPower(exercise.data.fromFormat),
+        formatToPower(exercise.data.toFormat)
+      ];
+      
+      // Generate solution after loading exercise
+      this.generated = true;
+      this.recalculate();
+      this.drawExercise();
+    },
+    selectArchivedExercise(num, index) {
+      this.selectedArchivedExercise = index;
+    },
+    loadExerciseFromURL() {
+      if (!this.$route.query) return;
+
+      const exerciseHandle = this.$route.query.load;
+      if (!exerciseHandle) return;
+
+      const exerciseIndex = polyadicGetExerciseIndexOfHandle(this.$i18n, exerciseHandle);
+      if (exerciseIndex === -1) {
+        console.error('Unknown PolyadicConversion exercise handle:', exerciseHandle);
+        return;
+      }
+
+      this.selectedArchivedExercise = exerciseIndex;
+      this.loadArchivedExercise(); // This will load the exercise and generate the solution
+
+      this.$nextTick(() => {
+        this.$refs.archivedExercisesDropDownMenu.value = exerciseIndex;
+      });
+    }
   },
 };
 </script>
@@ -391,5 +470,21 @@ $arrow-size: 12px;
   .mobile_pdfGen{
     display: none;
   };
+}
+
+.floatingPointInput {
+  margin: 10px;
+  display: inline-block;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #d8d8d8;
+  position: relative;
+
+  h5 {
+    margin: 0;
+    margin-bottom: .2em;
+    font-size: 1em;
+    text-align: center;
+  }
 }
 </style>

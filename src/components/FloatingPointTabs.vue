@@ -1,30 +1,30 @@
 <template>
-<div class="floatingPoint">
-  <tabs v-model="selectedTab">
-    <tab
-      v-for="(tab, i) in tabs"
-      :key="`t${i}`"
-      :val="tab"
-      :label="$t(tab)"
-      :indicator="true"
-    />
-  </tabs>
-  <tab-panels
-    v-model="selectedTab"
-    :animate="false"
-    :swipeable="false"
-  >
-    <tab-panel val="conversion">
-      <fpc/>
-    </tab-panel>
-    <tab-panel val="exercises">
-      <fpe/>
-    </tab-panel>
-    <tab-panel val="arithmetic">
-      <fpa/>
-    </tab-panel>
-  </tab-panels>
-</div>
+  <div class="floatingPoint">
+    <tabs v-model="selectedTab">
+      <tab
+        v-for="(tab, i) in tabs"
+        :key="`t${i}`"
+        :val="tab"
+        :label="$t(tab)"
+        :indicator="true"
+      />
+    </tabs>
+    <tab-panels
+      v-model="selectedTab"
+      :animate="false"
+      :swipeable="false"
+    >
+      <tab-panel val="conversion">
+        <fpc />
+      </tab-panel>
+      <tab-panel val="exercises">
+        <fpe />
+      </tab-panel>
+      <tab-panel val="arithmetic">
+        <fpa />
+      </tab-panel>
+    </tab-panels>
+  </div>
 </template>
 
 <script>
@@ -49,11 +49,6 @@ export default defineComponent({
     TabPanels,
     TabPanel,
   },
-  data() {
-    return {
-      selectedTab: 'arithmetic',
-    };
-  },
   setup() {
     const state = reactive({
       selectedTab: tabs[1],
@@ -61,6 +56,11 @@ export default defineComponent({
     return {
       tabs,
       ...toRefs(state),
+    };
+  },
+  data() {
+    return {
+      selectedTab: 'arithmetic',
     };
   },
 });

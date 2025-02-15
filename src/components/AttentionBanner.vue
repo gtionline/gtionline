@@ -1,14 +1,22 @@
 <template>
   <div class="attention">
-    <font-awesome-icon class="infoCircle" icon="info-circle"/>
-    <label>{{this.text}}</label>
+    <font-awesome-icon
+      class="infoCircle"
+      icon="info-circle"
+    />
+    <label>{{ text }}</label>
   </div>
 </template>
 
 <script>
 export default {
   name: 'AttentionBanner',
-  props: ['text'],
+  props: {
+    text: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {};
   },

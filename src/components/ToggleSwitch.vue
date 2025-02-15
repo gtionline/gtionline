@@ -4,19 +4,23 @@ Very much inspired by w3schools: 'https://www.w3schools.com/howto/howto_css_swit
 
 <template>
   <label class="switch">
-    <input type="checkbox" @click="event => toggle(event)" ref="checkbox">
-    <span class="slider round"></span>
+    <input
+      ref="checkbox"
+      type="checkbox"
+      @click="event => toggle(event)"
+    >
+    <span class="slider round" />
   </label>
 </template>
 
 <script>
 export default {
+  props: ['checkedDefault'],
   data() {
     return {
       checked: false,
     };
   },
-  props: ['checkedDefault'],
   mounted() {
     this.checked = (this.checkedDefault === 'true');
 

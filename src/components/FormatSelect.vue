@@ -1,34 +1,70 @@
 <template>
-  <div class="selectBox" :disabled="isDisabled">
-    <select class="fpfSelect" v-model="selectedOption" :disabled="isDisabled"
-      @input="event => { $emit('input', num, event.target.value) }">
-      <option v-for="(name, option) in options" :value="option" :key="option">{{name}}</option>
+  <div
+    class="selectBox"
+    :disabled="isDisabled"
+  >
+    <select
+      v-model="selectedOption"
+      class="fpfSelect"
+      :disabled="isDisabled"
+      @input="event => { $emit('input', num, event.target.value) }"
+    >
+      <option
+        v-for="(name, option) in options"
+        :key="option"
+        :value="option"
+      >
+        {{ name }}
+      </option>
     </select>
-    <font-awesome-icon class="angleDown" icon="angle-down"/>
+    <font-awesome-icon
+      class="angleDown"
+      icon="angle-down"
+    />
   </div>
 </template>
 
 <script>
 export default {
   name: 'FormatSelect',
-  props: ['num', 'sel', 'options', 'isDisabled'],
-  emits: ['input'],
-  created() {
-    this.selectedOption = this.sel;
-    console.log(`Select was created: ${this.selectedOption}`);
+  props: {
+    num: {
+      type: Number,
+      required: true
+    },
+    sel: {
+      type: String,
+      required: true
+    },
+    options: {
+      type: Object,  // Since it's used as a key-value map
+      required: true
+    },
+    isDisabled: {
+      type: Boolean,
+      default: false
+    }
   },
+  emits: ['input'],
   data() {
     return {
       selectedOption: 'binary',
     };
   },
   watch: {
-    sel: { // handler was never called, changing this to sel makes it responsive
+    sel: {
       immediate: true,
       handler(newValue) {
-        console.log(`New value selected ${newValue}`);
         this.selectedOption = newValue;
       },
+    },
+  },
+  created() {
+    this.selectedOption = this.sel;
+  },
+  methods: {
+    setSelected(index) {
+      this.selectedOption = index;
     },
   },
 };
@@ -37,6 +73,7 @@ export default {
 <style scoped lang="scss">
 select{
   -webkit-appearance: none;
+  appearance: none;
   border: none;
   font-size: 13px;
   list-style: none;

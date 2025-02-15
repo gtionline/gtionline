@@ -1,9 +1,26 @@
 <template>
   <div class="navbar">
     <!--<div class="hamburger" @click="responsive = !responsive"><font-awesome-icon class="bars" icon="bars"/></div> -->
-    <input class="menu-btn" type="checkbox" id="menu-btn" />
-    <label id="checkBoxLabel"  class="menu-icon" for="menu-btn"><span class="navicon"></span></label>
-    <router-link class="logoContainer" to="/" ><img id="logo" src="@/assets/logo.png"></router-link>
+    <input
+      id="menu-btn"
+      class="menu-btn"
+      type="checkbox"
+    >
+    <label
+      id="checkBoxLabel"
+      class="menu-icon"
+      for="menu-btn"
+    ><span class="navicon" /></label>
+    <router-link
+      class="logoContainer"
+      to="/"
+    >
+      <img
+        id="logo"
+        alt="logo"
+        src="@/assets/logo.png"
+      >
+    </router-link>
     <!-- <ul class="menu" :class="responsive ? 'responsive' : ''">
       <li v-for="submenu in menu" v-bind:key="submenu.id">
         <router-link active-class="selectedNav" :to="`${submenu.link}`">{{submenu.label}}</router-link>
@@ -14,13 +31,23 @@
         </ul>
       </li>
     </ul> -->
-    <div class="menu" :class="responsive ? 'responsive' : ''">
-      <router-link @click="checkMenuClose" class="routerLink" v-for="submenu in menu" v-bind:key="submenu.id" active-class="selectedNav" :to="`${submenu.link}`">
-        <span>{{submenu.label}}</span>
+    <div
+      class="menu"
+      :class="responsive ? 'responsive' : ''"
+    >
+      <router-link
+        v-for="submenu in menu"
+        :key="submenu.id"
+        class="routerLink"
+        active-class="selectedNav"
+        :to="`${submenu.link}`"
+        @click="checkMenuClose"
+      >
+        <span>{{ submenu.label }}</span>
       </router-link>
     </div>
     <div id="languageDropdown">
-      <LSelect @input="chooseLang"/>
+      <LSelect @input="chooseLang" />
     </div>
   </div>
 </template>
@@ -41,11 +68,11 @@ export default {
   computed: {
     menu() {
       return [
-        /* {
+        {
           id: 0,
           label: this.$t('polyadic'),
           link: 'polyadic',
-        }, */
+        },
         {
           id: 1,
           label: this.$t('floatingPoint'),
@@ -71,7 +98,7 @@ export default {
   },
   methods: {
     checkMenuClose() {
-      console.log('Check');
+      // console.log('Check');
       const checkBox = document.getElementById('menu-btn');
       checkBox.checked = false;
     },
@@ -229,7 +256,6 @@ export default {
     top: 20px;
   }
 }
-
 
 @media (max-width: 768px) {
   .hamburger {

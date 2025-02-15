@@ -1,6 +1,6 @@
 <template>
   <div class="accordion">
-    <slot></slot>
+    <slot />
   </div>
 </template>
 

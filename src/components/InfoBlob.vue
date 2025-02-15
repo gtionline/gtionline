@@ -1,14 +1,14 @@
 <template>
-    <div class="infoblob-container">
-        <!-- <div class="infoblob-i">i</div> -->
-        <font-awesome-icon icon="info-circle"/>
-        <div class="infoblob-text-container">
-            <slot />
-            <!-- <span>
+  <div class="infoblob-container">
+    <!-- <div class="infoblob-i">i</div> -->
+    <font-awesome-icon icon="info-circle" />
+    <div class="infoblob-text-container">
+      <slot />
+      <!-- <span>
                 Zuerst werden die Terme umsortiert, sodass sich absorbierende Terme leichter auffallen.
             </span> -->
-        </div>
     </div>
+  </div>
 </template>
 
 <script>

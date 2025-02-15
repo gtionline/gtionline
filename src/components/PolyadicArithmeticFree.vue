@@ -2,50 +2,83 @@
   <!--v-on:mouseenter="sliderMouseUp" v-on:mouseleave="sliderMouseUp"
   v-on:mouseup="sliderMouseUp"-->
   <div class="fp-arithmetic bodyContainer">
-    <p class="introduction">{{$t('polyFreeIntro')}}</p>
-    <div id="fpOperationTable" class="fpOperationTable">
+    <p class="introduction">
+      {{ $t('polyFreeIntro') }}
+    </p>
+    <div
+      id="fpOperationTable"
+      class="fpOperationTable"
+    >
       <div class="container">
         <table class="polyadicTable">
-          <tr>
-            <td>
-              <div class="solutionInput">
-              <p>{{$t('input')}} 1</p>
-              <input id="InputNumber1" v-model="inputNums[0]" :placeholder="this.$t('inputNumber') "
-                     @input="selectVal(0, $event.target.value)" :class="backFormat"/>
-              </div>
-            </td>
-            <td>
-              <div class="solutionInput">
-              <p>{{$t('input')}} 2</p>
-              <input id="InputNumber2" v-model="inputNums[1]" :placeholder="this.$t('inputNumber') "
-                     @input="selectVal(1, $event.target.value)" :class="backFormat"/>
-              </div>
-            </td>
-            <td>
-              <p>{{$t('firstFormat')}}</p>
-              <FSelect :num="0" :sel="selectedFormat" @input="selectFormat"
-                       :options="formatOptions"/>
-            </td>
-            <td>
-              <p>{{$t('operand')}}</p>
-              <FSelect :sel="operator" @input="selectOperator"
-                :options="operationOptions"/>
-            </td>
-          </tr>
+          <tbody>
+            <tr>
+              <td>
+                <div class="solutionInput">
+                  <p>{{ $t('input') }} 1</p>
+                  <input
+                    id="InputNumber1"
+                    v-model="inputNums[0]"
+                    :placeholder="$t('inputNumber') "
+                    :class="backFormat"
+                    @input="selectVal(0, $event.target.value)"
+                  >
+                </div>
+              </td>
+              <td>
+                <div class="solutionInput">
+                  <p>{{ $t('input') }} 2</p>
+                  <input
+                    id="InputNumber2"
+                    v-model="inputNums[1]"
+                    :placeholder="$t('inputNumber') "
+                    :class="backFormat"
+                    @input="selectVal(1, $event.target.value)"
+                  >
+                </div>
+              </td>
+              <td>
+                <p>{{ $t('firstFormat') }}</p>
+                <FSelect
+                  :num="0"
+                  :sel="selectedFormat"
+                  :options="formatOptions"
+                  @input="selectFormat"
+                />
+              </td>
+              <td>
+                <p>{{ $t('operand') }}</p>
+                <FSelect
+                  :sel="operator"
+                  :options="operationOptions"
+                  @input="selectOperator"
+                />
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </div>
     <div class="solutionArea">
       <div class="solutionInput">
-        <p>{{$t('ownSolution')}}</p>
-        <input id="propSol" :class="backSol" v-model="propSol">
+        <p>{{ $t('ownSolution') }}</p>
+        <input
+          id="propSol"
+          v-model="propSol"
+          :class="backSol"
+        >
       </div>
-      <div class="divMargin"/>
-      <button id="checkSolution" @click="checkSolution">{{$t('check')}}</button>
+      <div class="divMargin" />
+      <button
+        id="checkSolution"
+        @click="checkSolution"
+      >
+        {{ $t('check') }}
+      </button>
     </div>
-    <h4>{{$t('correctSolution')}}</h4>
+    <h4>{{ $t('correctSolution') }}</h4>
     <div style="position: relative">
-      <AttentionBanner :text="$t('attSolve')"/>
+      <AttentionBanner :text="$t('attSolve')" />
       <!--<div class="pdfGen">
         <button v-on:click="downloadPdf" v-if="this.solution">{{$t('getDescription')}}</button>
       </div>
@@ -54,20 +87,26 @@
       </div>-->
     </div>
     <div id="solution">
-      <Accordion :solutionDescription="solDescr">
-        <AccordionItem v-for="panel in solDescr" v-bind:key="panel.name">
-          <template v-slot:accordion-item-title>
-            {{panel.name}}
+      <Accordion :solution-description="solDescr">
+        <AccordionItem
+          v-for="panel in solDescr"
+          :key="panel.name"
+        >
+          <template #accordion-item-title>
+            {{ panel.name }}
           </template>
-          <template v-slot:accordion-item-body>
-            <span v-html="panel.text"></span>
+          <template #accordion-item-body>
+            <span v-html="panel.text" />
             <Accordion v-if="panel.subpanels != null">
-              <AccordionItem v-for="subpanel in panel.subpanels" v-bind:key="subpanel.name">
-                <template v-slot:accordion-item-title>
-                  {{subpanel.name}}
+              <AccordionItem
+                v-for="subpanel in panel.subpanels"
+                :key="subpanel.name"
+              >
+                <template #accordion-item-title>
+                  {{ subpanel.name }}
                 </template>
-                <template v-slot:accordion-item-body>
-                  <span v-html="subpanel.text"></span>
+                <template #accordion-item-body>
+                  <span v-html="subpanel.text" />
                 </template>
               </AccordionItem>
             </Accordion>
@@ -75,7 +114,7 @@
         </AccordionItem>
       </Accordion>
     </div>
-    <div id="jaxHelper"></div>
+    <div id="jaxHelper" />
   </div>
 </template>
 
@@ -89,6 +128,7 @@ import * as description from '../scripts/DescriptionPolyadicSolution';
 import * as pdf from '../scripts/generatePdfPolyadicConversion';
 import * as solution from '../scripts/polyadicSolution';
 import { formatToPower } from '../scripts/polyadicUtil';
+import { NumberPolyadic } from '../scripts/algorithms/arithmetic/polyadic/numberPolyadic';
 
 export default {
   name: 'PolyadicConversionFree',
@@ -172,15 +212,15 @@ export default {
       };
     },
   },
-  mounted() {
-    if (this.default) {
-      this.recalculate();
-    }
-  },
   watch: {
     input() {
       this.saveVals();
     },
+  },
+  mounted() {
+    if (this.default) {
+      this.recalculate();
+    }
   },
   methods: {
     saveVals() {
@@ -319,21 +359,30 @@ export default {
       descr.generatePdf();
     },
     computeSolution() {
+      if (this.inputNums[0] === '' || this.inputNums[1] === '') {
+        return;
+      }
+      const number1 = this.inputNums[0].replace(',', '.');
+      const number2 = this.inputNums[1].replace(',', '.');
       // calc solution
       const polyadicSolution = new solution.PolyadicSolution();
-      polyadicSolution.calcArithmeticSolution(
-        this.inputNums[0].replace(',', '.'),
-        this.inputNums[1].replace(',', '.'),
-        this.power,
-        this.operator,
-      );
+      const numPoly1 = new NumberPolyadic(this.power, number1);
+      const numPoly2 = new NumberPolyadic(this.power, number2);
+      switch (this.operator) {
+        case 'add':
+          polyadicSolution.add(numPoly1, numPoly2);
+          break;
+        case 'sub':
+          polyadicSolution.subtract(numPoly1, numPoly2);
+          break;
+      }
       this.watcher = JSON.parse(JSON.stringify(polyadicSolution.watcher));
       this.solution = polyadicSolution.result;
       // construct description
       const descr = new description.DescriptionPolyadicSolution(this, this.watcher);
       descr.makeDescription(
-        this.inputNums[0].replace(',', '.'),
-        this.inputNums[1].replace(',', '.'),
+        number1,
+        number2,
         this.power,
         this.operator,
       );

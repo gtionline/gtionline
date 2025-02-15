@@ -1,63 +1,109 @@
 <template>
   <div class="fp-exercise pageContainer">
-    <h3 class="title">{{$t('exercises')}}</h3>
+    <h3 class="title">
+      {{ $t('exercises') }}
+    </h3>
     <div class="bodyContainer">
-      <p class="introduction">{{$t('fpExerciseIntro')}}</p>
-      <h4>{{$t('generateEx')}}</h4>
+      <p class="introduction">
+        {{ $t('fpExerciseIntro') }}
+      </p>
+      <h4>{{ $t('generateEx') }}</h4>
       <div>
-        <FSelect :sel="selectedFormat[0]" @input="selectOp" :num=0
-                  :options="operationOptions"/>
-        <div class="divMargin"/>
-        <button v-on:click="generateExercise">{{$t('generate')}}</button>
-        <div class="divMargin"/>
-        <FSelect :options="archivedExerciseTitles" :sel="0"
-          @input="selectArchivedExercise"/>
-        <div class="divMargin"/>
-        <button @click="loadArchivedExercise">{{$t('load')}}</button>
+        <div class="floatingPointInput">
+          <h5>{{ $t('randomExercise') }}:</h5>
+          <FSelect
+            :sel="selectedFormat[0]"
+            :num="0"
+            :options="operationOptions"
+            @input="selectOp"
+          />
+          <div class="divMargin" />
+          <button @click="generateExercise">
+            {{ $t('generate') }}
+          </button>
+        </div>
+        <div class="floatingPointInput">
+          <h5>{{ $t('fp_from_archive') }}:</h5>
+          <FSelect
+            ref="archivedExercisesFPDropDownMenu"
+            :options="archivedExerciseTitles"
+            :sel="0"
+            @input="selectArchivedExercise"
+          />
+          <div class="divMargin" />
+          <button @click="loadArchivedExercise">
+            {{ $t('load') }}
+          </button>
+        </div>
       </div>
-      <div id="exerciseField" v-html="exerciseText"></div>
-      <h4>{{$t('ownSolution')}}</h4>
-      <AttentionBanner :text="$t('attRound')"/>
+      <div id="exerciseField">
+        <MathJax :formula="exerciseText" />
+      </div>
+      <h4>{{ $t('ownSolution') }}</h4>
+      <AttentionBanner :text="$t('attRound')" />
       <div class="solutionArea">
         <div class="solutionInput">
-          <p>{{$t('signBit')}}</p>
-          <input id="propVB" :class="backVB" v-model="propVB">
+          <p>{{ $t('signBit') }}</p>
+          <input
+            id="propVB"
+            v-model="propVB"
+            :class="backVB"
+          >
         </div>
-        <div class="divMargin"/>
+        <div class="divMargin" />
         <div class="solutionInput">
-          <p>{{$t('exponentBits')}}</p>
-          <input id="propE" :class="backE" v-model="propE">
+          <p>{{ $t('exponentBits') }}</p>
+          <input
+            id="propE"
+            v-model="propE"
+            :class="backE"
+          >
         </div>
-        <div class="divMargin"/>
+        <div class="divMargin" />
         <div class="solutionInput">
-          <p>{{$t('fractionBits')}}</p>
-          <input id="propM" :class="backM" v-model="propM">
+          <p>{{ $t('fractionBits') }}</p>
+          <input
+            id="propM"
+            v-model="propM"
+            :class="backM"
+          >
         </div>
-        <div class="divMargin"/>
-        <button id="checkSolution" @click="checkSolution">{{$t('check')}}</button>
+        <div class="divMargin" />
+        <button
+          id="checkSolution"
+          @click="checkSolution"
+        >
+          {{ $t('check') }}
+        </button>
       </div>
-      <h4>{{$t('correctSolution')}}</h4>
+      <h4>{{ $t('correctSolution') }}</h4>
       <div style="position: relative">
-        <AttentionBanner :text="$t('attSolve')"/>
+        <AttentionBanner :text="$t('attSolve')" />
         <!-- <div class="pdfGen">
           <button v-on:click="downloadPdf" v-if="this.solution">{{$t('getDescription')}}</button>
         </div> -->
       </div>
       <div id="solution">
-        <Accordion :solutionDescription="solDescr">
-          <AccordionItem v-for="panel in solDescr" v-bind:key="panel.name">
-            <template v-slot:accordion-item-title>
-              {{panel.name}}
+        <Accordion :solution-description="solDescr">
+          <AccordionItem
+            v-for="panel in solDescr"
+            :key="panel.name"
+          >
+            <template #accordion-item-title>
+              {{ panel.name }}
             </template>
-            <template v-slot:accordion-item-body>
-              <span v-html="panel.text"></span>
+            <template #accordion-item-body>
+              <span v-html="panel.text" />
               <Accordion v-if="panel.subpanels != null">
-                <AccordionItem v-for="subpanel in panel.subpanels" v-bind:key="subpanel.name">
-                  <template v-slot:accordion-item-title>
-                    {{subpanel.name}}
+                <AccordionItem
+                  v-for="subpanel in panel.subpanels"
+                  :key="subpanel.name"
+                >
+                  <template #accordion-item-title>
+                    {{ subpanel.name }}
                   </template>
-                  <template v-slot:accordion-item-body>
-                    <span v-html="subpanel.text"></span>
+                  <template #accordion-item-body>
+                    <span v-html="subpanel.text" />
                   </template>
                 </AccordionItem>
               </Accordion>
@@ -70,12 +116,14 @@
 </template>
 
 <script>
+import { fpLoadArchivedExercise, fpGetArchivedExerciseTitles, fpGetExerciseIndexOfHandle } from '@/scripts/fpArchivedExercises';
 import AttentionBanner from './AttentionBanner.vue';
 import * as randomIEEE from '../scripts/randomIEEE';
 import FormatSelect from './FormatSelect.vue';
 // import SolutionAccordion from './SolutionAccordion.vue';
 import Accordion from './EmbeddedAccordion.vue';
 import AccordionItem from './EmbeddedAccordionItem.vue';
+import MathJax from './MathJax.vue';
 import * as solution from '../scripts/ieeeSolution';
 import * as checker from '../scripts/checkSolution';
 import * as description from '../scripts/DescriptionSolution';
@@ -89,6 +137,7 @@ export default {
     Accordion,
     AccordionItem,
     AttentionBanner,
+    MathJax
   },
   data() {
     const useCookies = false;
@@ -143,12 +192,7 @@ export default {
   },
   computed: {
     archivedExerciseTitles() {
-      return [
-        this.$t('complementExample'),
-        this.$t('shiftZero'),
-        this.$t('doubleNegative'),
-        this.$t('denormalized'),
-      ];
+      return fpGetArchivedExerciseTitles(this.$i18n);
     },
     operationOptions() {
       return {
@@ -159,17 +203,18 @@ export default {
       };
     },
     solDescr() {
+      console.log('Print', this.exponentBits, this.numBits, this.fp1, this.fp2);
       const ieeeSolution = new solution.IEEESolution(this.exponentBits, this.numBits);
-      console.log(this.selectedFormat[0]);
       ieeeSolution.computeSolution(this.fp1, this.fp2, this.selectedFormat[0]);
       const watcher = ieeeSolution.watcher;
+      console.log(watcher);
       const descr = new description.DescriptionSolution(
         this,
         this.exponentBits,
         this.numBits,
         watcher,
       );
-      descr.makeDescriptionArithmetic(this.fp1, this.fp2, this.solution, this.selectedFormat[0]);
+      descr.makeDescriptionArithmetic(this.fp1, this.fp2, ieeeSolution.result, this.selectedFormat[0]);
       this.setVariables(watcher, ieeeSolution.result, ieeeSolution.resultObject);
       return descr.result;
     },
@@ -185,8 +230,10 @@ export default {
         div: [this.$t('division'), '/'],
       };
       console.log(operation);
+      console.log('Info', { op1: opNames[operation][0], op2: opNames[operation][1] });
       // `Es seien die Gleitkommazahlen \\( fp_1 \\) und \\( fp_2 \\) im 16 Bit Gleitkommaformat gegeben. Berechnen Sie die ${opNames[operation][0]} \\( fp_1 ${opNames[operation][1]} fp_2 \\) ohne die Binärdarstellung zu verlassen und geben Sie diese wieder als Gleitkommazahl an:
       const introText = this.$t('fpExerciseText', { op1: opNames[operation][0], op2: opNames[operation][1] });
+      console.log(introText);
       return `${introText} 
 
           \\( fp_1 = \\text{${this.fp1}} \\)\n
@@ -194,6 +241,8 @@ export default {
     },
   },
   mounted() {
+    this.loadExerciseFromURL();
+
     this.$nextTick(() => {
       if (this.default) {
         this.drawExercise();
@@ -222,31 +271,10 @@ export default {
       if (index < 0) {
         return;
       }
-      const archive = [
-        {
-          fp1: '0 01110 1100100000',
-          fp2: '1 01001 1001010111',
-          op: 'add',
-        },
-        {
-          fp1: '0 10010 0101111100',
-          fp2: '1 00010 0000100011',
-          op: 'add',
-        },
-        {
-          fp1: '1 01101 0111001010',
-          fp2: '1 01100 0100000010',
-          op: 'add',
-        },
-        {
-          fp1: '1 00110 0010101010',
-          fp2: '1 11011 0011111100',
-          op: 'div',
-        },
-      ];
-      this.fp1 = archive[index].fp1;
-      this.fp2 = archive[index].fp2;
-      this.selectedFormat[0] = archive[index].op;
+      const exercise = fpLoadArchivedExercise(this.$i18n, index).data;
+      this.fp1 = exercise.fp1;
+      this.fp2 = exercise.fp2;
+      this.selectedFormat[0] = exercise.op;
       this.prepareExercise();
     },
     saveVals() {
@@ -280,9 +308,9 @@ export default {
     checkSolution() {
       const checkSolution = new checker.CheckSolution(this.exponentBits);
       checkSolution.checkSolution(this.solutionObject, this.propVB, this.propE, this.propM);
-      this.backVB = checkSolution.backVB;
-      this.backE = checkSolution.backE;
-      this.backM = checkSolution.backM;
+      this.backVB = checkSolution.getVBStatus();
+      this.backE = checkSolution.getEStatus();
+      this.backM = checkSolution.getMStatus();
     },
     drawExercise() {
       this.$nextTick(() => {
@@ -292,14 +320,8 @@ export default {
       });
     },
     prepareExercise() {
-      this.drawExercise();
-      // this.computeSolution();
       this.saveVals();
-      this.$nextTick(() => {
-        if (window.MathJax) {
-          window.MathJax.typeset();
-        }
-      });
+      this.drawExercise();
     },
     generateExercise() {
       const random = new randomIEEE.RandomIEEE(this.exponentBits, this.numBits);
@@ -318,6 +340,29 @@ export default {
     selectOp(num, val) {
       this.selectedFormat[num] = val;
       // this.computeSolution();
+    },
+    loadExerciseFromURL() {
+      if (!this.$route.query) {
+        return;
+      }
+      // Load Exercise statet in URL parameters (...?load=)
+      const exerciseHandle = this.$route.query.load;
+      if (!exerciseHandle) {
+        return;
+      }
+      const exerciseIndex = fpGetExerciseIndexOfHandle(this.$i18n, exerciseHandle);
+      if (exerciseIndex === -1) {
+        console.error('Unknown BooleanFunctionMinimizer-exercise handle: ', exerciseHandle);
+        return;
+      }
+      // retrieve exercise data
+      this.selectArchivedExercise(0, exerciseIndex);
+      this.loadArchivedExercise();
+
+      // Select the loaded exercise in the drop-down menu
+      this.$nextTick(() => {
+        this.$refs.archivedExercisesFPDropDownMenu.setSelected(exerciseIndex);
+      });
     },
     /* computeSolution() {
       const ieeeSolution = new solution.IEEESolution(this.exponentBits, this.numBits);
@@ -382,6 +427,13 @@ $arrow-size: 12px;
   border-radius: 10px;
   border: 1px solid #d8d8d8;
   position: relative;
+
+  h5 {
+    margin: 0;
+    margin-bottom: .2em;
+    font-size: 1em;
+    text-align: center;
+  }
 }
 
 .formatContainer {

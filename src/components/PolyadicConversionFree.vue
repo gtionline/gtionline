@@ -1,42 +1,71 @@
 <template>
   <div class="fp-arithmetic bodyContainer">
-    <p class="introduction">{{$t('polyConvIntro')}}</p>
-    <div id="fpOperationTable" class="fpOperationTable">
+    <p class="introduction">
+      {{ $t('polyConvIntro') }}
+    </p>
+    <div
+      id="fpOperationTable"
+      class="fpOperationTable"
+    >
       <div class="container">
         <table class="polyadicTable">
-          <tr>
-            <td>
-              <div class="solutionInput">
-              <p>{{$t('input')}}</p>
-              <input id="InputNumber" v-model="inputNum" :placeholder="this.$t('inputNumber') "
-                     @input="checkFormat($event.target.value)" :class="backFormat"/>
-              </div>
-            </td>
-            <td>
-              <p>{{$t('firstFormat')}}</p>
-              <FSelect :num="0" :sel="selectedFormat[0]" @input="selectFormat"
-                         :options="formatOptions"/>
-            </td>
-            <td>
-              <p>{{$t('secondFormat')}}</p>
-              <FSelect :num="1" :sel="selectedFormat[1]" @input="selectFormat"
-                         :options="formatOptions"/>
-            </td>
-          </tr>
+          <tbody>
+            <tr>
+              <td>
+                <div class="solutionInput">
+                  <p>{{ $t('input') }}</p>
+                  <input
+                    id="InputNumber"
+                    v-model="inputNum"
+                    :placeholder="$t('inputNumber') "
+                    :class="backFormat"
+                    @input="checkFormat($event.target.value)"
+                  >
+                </div>
+              </td>
+              <td>
+                <p>{{ $t('firstFormat') }}</p>
+                <FSelect
+                  :num="0"
+                  :sel="selectedFormat[0]"
+                  :options="formatOptions"
+                  @input="selectFormat"
+                />
+              </td>
+              <td>
+                <p>{{ $t('secondFormat') }}</p>
+                <FSelect
+                  :num="1"
+                  :sel="selectedFormat[1]"
+                  :options="formatOptions"
+                  @input="selectFormat"
+                />
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </div>
     <div class="solutionArea">
       <div class="solutionInput">
-        <p>{{$t('ownSolution')}}</p>
-        <input id="propSol" :class="backSol" v-model="propSol">
+        <p>{{ $t('ownSolution') }}</p>
+        <input
+          id="propSol"
+          v-model="propSol"
+          :class="backSol"
+        >
       </div>
-      <div class="divMargin"/>
-      <button id="checkSolution" @click="checkSolution">{{$t('check')}}</button>
+      <div class="divMargin" />
+      <button
+        id="checkSolution"
+        @click="checkSolution"
+      >
+        {{ $t('check') }}
+      </button>
     </div>
-    <h4>{{$t('correctSolution')}}</h4>
+    <h4>{{ $t('correctSolution') }}</h4>
     <div style="position: relative">
-      <AttentionBanner :text="$t('attSolve')"/>
+      <AttentionBanner :text="$t('attSolve')" />
       <!--  <div class="pdfGen">
         <button v-on:click="downloadPdf" v-if="this.solution">{{$t('getDescription')}}</button>
       </div>
@@ -45,20 +74,26 @@
       </div> -->
     </div>
     <div id="solution">
-      <Accordion :solutionDescription="solDescr">
-        <AccordionItem v-for="panel in solDescr" v-bind:key="panel.name">
-          <template v-slot:accordion-item-title>
-            {{panel.name}}
+      <Accordion :solution-description="solDescr">
+        <AccordionItem
+          v-for="panel in solDescr"
+          :key="panel.name"
+        >
+          <template #accordion-item-title>
+            {{ panel.name }}
           </template>
-          <template v-slot:accordion-item-body>
-            <span v-html="panel.text"></span>
+          <template #accordion-item-body>
+            <span v-html="panel.text" />
             <Accordion v-if="panel.subpanels != null">
-              <AccordionItem v-for="subpanel in panel.subpanels" v-bind:key="subpanel.name">
-                <template v-slot:accordion-item-title>
-                  {{subpanel.name}}
+              <AccordionItem
+                v-for="subpanel in panel.subpanels"
+                :key="subpanel.name"
+              >
+                <template #accordion-item-title>
+                  {{ subpanel.name }}
                 </template>
-                <template v-slot:accordion-item-body>
-                  <span v-html="subpanel.text"></span>
+                <template #accordion-item-body>
+                  <span v-html="subpanel.text" />
                 </template>
               </AccordionItem>
             </Accordion>
@@ -66,7 +101,7 @@
         </AccordionItem>
       </Accordion>
     </div>
-    <div id="jaxHelper"></div>
+    <div id="jaxHelper" />
   </div>
 </template>
 
@@ -146,6 +181,11 @@ export default {
       };
     },
   },
+  watch: {
+    input() {
+      this.saveVals();
+    },
+  },
   mounted() {
     if (this.default) {
       this.power[0] = formatToPower(this.selectedFormat[0]);
@@ -153,11 +193,6 @@ export default {
       this.checkFormat(this.inputNum);
       // this.recalculate();
     }
-  },
-  watch: {
-    input() {
-      this.saveVals();
-    },
   },
   methods: {
     saveVals() {
@@ -278,6 +313,9 @@ export default {
       descr.generatePdf();
     },
     computeSolution() {
+      if (this.inputNum === '') {
+        return;
+      }
       // calc solution
       const polyadicSolution = new solution.PolyadicSolution();
       console.log(this.power, this.selectedFormat);

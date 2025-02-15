@@ -1,19 +1,32 @@
 <template>
   <div class="accordion-item">
     <!-- Item title -->
-    <div class="accordion-item-header" @click="doclick">
-      <slot name="accordion-item-title"></slot>
-      <font-awesome-icon class="angleDown" icon="angle-down"/>
+    <div
+      class="accordion-item-header"
+      @click="doclick"
+    >
+      <slot name="accordion-item-title" />
+      <font-awesome-icon
+        class="angleDown"
+        icon="angle-down"
+      />
     </div>
     <!-- Item body -->
-    <div class="accordion-item-body" v-if="this.expanded === true" ref="accordion_item_body">
+    <div
+      v-if="expanded === true"
+      ref="accordion_item_body"
+      class="accordion-item-body"
+    >
       <!-- NOTE: 'expanding sideways' is now more like a fullscreen mode -->
-      <button v-if="this.expandableSideways" class="accordion-item-expand-sideways-toggle ion-md-expand"
-          @click="toggleExpandSideways">
+      <button
+        v-if="expandableSideways"
+        class="accordion-item-expand-sideways-toggle ion-md-expand"
+        @click="toggleExpandSideways"
+      >
+        >
       </button>
-      <slot name="accordion-item-body" ></slot>
+      <slot name="accordion-item-body" />
     </div>
-
   </div>
 </template>
 
@@ -42,7 +55,7 @@ export default {
     },
     toggleExpandSideways(e) {
       this.expandedSideways = !this.expandedSideways;
-      console.log('target: ', e.target);
+      // console.log('target: ', e.target);
       this.$nextTick(() => {
         if (window.MathJax) {
           window.MathJax.typeset();
@@ -51,7 +64,7 @@ export default {
 
       if (e.target.classList.contains('accordion-item-expand-sideways-toggle')) {
         // e.target.classList.toggle('active');
-        console.log('toggle requested!');
+        // console.log('toggle requested!');
         this.$refs.accordion_item_body.classList.toggle(
           'accordion-item-body-expanded-sideways',
         );
@@ -62,6 +75,12 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
+  @media screen and (max-width: 750px) {
+    .accordion-item-body {
+      padding: .8em !important;
+    }
+  }
 
   .accordion-item-header {
     background-color: $freshBlue;
@@ -95,7 +114,10 @@ export default {
   .accordion-item-body {
     border-top-style: none;
     border-bottom-style: none;
-    padding: 1em;
+    border-left-style: solid;
+    border-right-style: solid;
+    border: lightgray;
+    // padding: 1em;
     overflow-x: auto;
     background: #ffffff5e;
     text-align: left;
@@ -118,10 +140,12 @@ export default {
   }
 
   .accordion-item-body-expanded-sideways {
-    position: relative;
-    width: 96vw;
-    left: 50%;
-    margin-left: -49vw;
+    // position: relative;
+    // width: 96vw;
+    // left: 50%;
+    // margin-left: -49vw;
+
+    background: rgba(255, 255, 255, 1);
 
     border-style: solid;
     border-width: 1px;
@@ -132,17 +156,18 @@ export default {
     margin-left: 0;
 
     top: 5%;
-    left: 5%;
-    width: 90%;
+    left: 0%;
+    width: 100%;
     height: 90%;
     @media screen and (max-width: 1400px) {
       width: 95%;
       height: 90%;
       top: 10px;
       left: 0%;
+      padding-top: 4em !important
     }
     @media screen and (max-width: 700px) {
-      width: 90%;
+      // width: 90%;
     }
 
   }
@@ -157,7 +182,6 @@ export default {
       border-bottom-style: solid;
     }
   }
-
 
   // .accordion-item-header.active {
   //   background-color: red;

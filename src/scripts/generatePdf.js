@@ -1,5 +1,5 @@
 /* eslint no-useless-escape: 0  no-case-declarations: 0 */
-import * as tool from './gti-tools';
+import { getIEEEFromString } from './algorithms/arithmetic/IEEE/numberIEEE';
 import * as description from './DescriptionSolution';
 import router from '../router/index';
 import * as convertFormat from './formatConversions';
@@ -749,9 +749,9 @@ export class PdfDescription {
       converter.binToIEEE(num2);
       num1 = converter.result;
     }
-    const solution = tool.getIEEEFromString(this.exponentBits, solutionString);
-    const y1 = tool.getIEEEFromString(this.exponentBits, num1);
-    const y2 = tool.getIEEEFromString(this.exponentBits, num2);
+    const solution = getIEEEFromString(this.exponentBits, solutionString);
+    const y1 = getIEEEFromString(this.exponentBits, num1);
+    const y2 = getIEEEFromString(this.exponentBits, num2);
     this.getStyle();
     this.getHeader(y2);
     this.getDisclaimer();

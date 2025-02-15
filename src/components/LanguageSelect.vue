@@ -1,14 +1,40 @@
 <template>
-  <div class="langSelect" :tabindex="tabindex" @blur="open = false">
-    <div class="selected" :class="{open: open}" @click="open = !open">
-      <img class="langImg" :src="selected.img"/>
+  <div
+    class="langSelect"
+    :tabindex="tabindex"
+    @blur="open = false"
+  >
+    <div
+      class="selected"
+      :class="{ open }"
+      @click="open = !open"
+    >
+      <img
+        class="langImg"
+        alt="language flag"
+        :src="selected.img"
+      >
       <span class="longLanguageName">{{ selected.nameLong }}</span>
-      <font-awesome-icon class="angleDown" icon="angle-down"/>
+      <font-awesome-icon
+        class="angleDown"
+        icon="angle-down"
+      />
     </div>
-    <div class="items" :class="{selectHide: !open}">
-      <div class="item" v-for="lang of languages" :key="lang.name"
-        @click="optionSelect(lang)">
-        <img class="langImg" :src="lang.img"/>
+    <div
+      class="items"
+      :class="{ selectHide: !open }"
+    >
+      <div
+        v-for="lang of languages"
+        :key="lang.name"
+        class="item"
+        @click="optionSelect(lang)"
+      >
+        <img
+          class="langImg"
+          alt="language flag"
+          :src="lang.img"
+        >
         <span class="longLanguageName">{{ lang.nameLong }}</span>
       </div>
     </div>
@@ -29,9 +55,6 @@ const germanFlag = require('../assets/germanFlag.png');
 export default {
   name: 'LanguageSelect',
   props: ['sel', 'tabindex'],
-  created() {
-    this.selected = this.languages[0];
-  },
   data() {
     return {
       languages: [
@@ -85,6 +108,9 @@ export default {
       selected: null,
       open: false,
     };
+  },
+  created() {
+    this.selected = this.languages[0];
   },
   mounted() {
     this.$emit('input', this.selected);

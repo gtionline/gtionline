@@ -1,31 +1,40 @@
 <template>
   <div class="home">
     <div class="headerHome">
-      <h1 class="titleHome"><span class="red">GTI</span> ONLINE</h1>
+      <h1 class="titleHome">
+        <span class="red">GTI</span> ONLINE
+      </h1>
       <div class="textHome">
-        <p>{{$t('homePageText')}}</p>
+        <p>{{ $t('homePageText') }}</p>
       </div>
       <div class="linkHome">
         <router-link
+          v-slot="{
+            href, navigate, isActive, isExactActive,
+          }"
           to="/fparithmetic"
           custom
-          v-slot="{ href, navigate, isActive, isExactActive }"
         >
           <a
             :href="href"
-            @click="navigate"
             :class="['link', isActive && 'router-link-active', isExactActive && 'router-link-exact-active']"
+            @click="navigate"
           >
-            <div class="linkLabel">{{$t('startTraining')}}</div>
-            <div class="linkButton"></div>
+            <div class="linkLabel">{{ $t('startTraining') }}</div>
+            <div class="linkButton" />
           </a>
         </router-link>
       </div>
     </div>
     <div class="imageContainer">
       <div class="startImg">
-        <img src="@/assets/gtionline.png"/>
-        <p class="imgDescription">{{$t('sequentialCircuit')}}</p>
+        <img
+          alt="Image of a sequential circuit"
+          src="@/assets/gtionline.png"
+        >
+        <p class="imgDescription">
+          {{ $t('sequentialCircuit') }}
+        </p>
       </div>
     </div>
   </div>
@@ -33,7 +42,7 @@
 
 <script>
 export default {
-  name: 'home',
+  name: 'HomePage',
 };
 </script>
 
@@ -103,6 +112,12 @@ export default {
     width: 100%;
     z-index: 100;
     text-align: left;
+
+    animation-name: jumpAnimation;
+    animation-duration: 4s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-timing-function: ease-in-out;
   }
 
   .textHome {
@@ -146,6 +161,11 @@ export default {
     background-repeat: no-repeat;
     background-position: 50%;
     transition: all .2s ease;
+  }
+
+  @keyframes jumpAnimation {
+    from {transform: translate(0, 0vh);}
+    to {transform: translate(0, -4vh);}
   }
 
   @media screen and (min-width: 1600px) {

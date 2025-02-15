@@ -1,87 +1,156 @@
 <template>
   <div class="fp-exercise pageContainer">
-    <h3 class="title">{{$t('conversion')}}</h3>
+    <h3 class="title">
+      {{ $t('conversion') }}
+    </h3>
     <div class="bodyContainer">
-      <p class="introduction">{{$t('fpConvIntro')}}</p>
-      <h4>{{$t('fpformat')}}</h4>
-      <p class="introduction">{{$t('fpFormatSelectionSimple')}}</p>
+      <p class="introduction">
+        {{ $t('fpConvIntro') }}
+      </p>
+      <h4>{{ $t('fpformat') }}</h4>
+      <p class="introduction">
+        {{ $t('fpFormatSelectionSimple') }}
+      </p>
       <div class="floatingPointFormatSelection">
-        <div class="formatContainer" v-on:mousemove="sliderMouseMove">
-          <div class="sign">VB</div>
-          <div class="exponent" :style="{ width:
-            (60 + this.exponentBits * (this.containerWidth / (this.numBits - 1)))+ 'px' }">
-            <div v-on:click="expandFraction" class="expandExponent">
-              <div class="arrowLeft">
-                <div class='arrowMask'></div>
-              </div>
-            </div>
-            E({{exponentBits}})
-            <div v-on:mousedown="sliderMouseDown" class="slider"/>
+        <div
+          class="formatContainer"
+          @mousemove="sliderMouseMove"
+        >
+          <div class="sign">
+            VB
           </div>
-          <div class="fraction" :style="{ width: (60 + (this.numBits - this.exponentBits - 1) *
-            (this.containerWidth / (this.numBits - 1))) + 'px' }">
-            <div v-on:click="expandExponent" class="expandFraction">
-              <div class="arrowRight">
-                <div class="arrowMask"></div>
+          <div
+            class="exponent"
+            :style="{
+              width:
+                `${60 + exponentBits * (containerWidth / (numBits - 1))}px`,
+            }"
+          >
+            <div
+              class="expandExponent"
+              @click="expandFraction"
+            >
+              <div class="arrowLeft">
+                <div class="arrowMask" />
               </div>
             </div>
-            M({{(numBits - exponentBits - 1)}})
+            E({{ exponentBits }})
+            <div
+              class="slider"
+              @mousedown="sliderMouseDown"
+            />
+          </div>
+          <div
+            class="fraction"
+            :style="{
+              width: `${60 + (numBits - exponentBits - 1)
+                * (containerWidth / (numBits - 1))}px`,
+            }"
+          >
+            <div
+              class="expandFraction"
+              @click="expandExponent"
+            >
+              <div class="arrowRight">
+                <div class="arrowMask" />
+              </div>
+            </div>
+            M({{ (numBits - exponentBits - 1) }})
           </div>
         </div>
-        <div class="mobile_formatContainer" v-on:mousemove="sliderMouseMove">
-          <div class="mobile_sign">Sign(1)</div>
-          <div v-on:click="expandExponent" class="mobile_exponent">
-            Exponent({{exponentBits}}) &uarr;
+        <div
+          class="mobile_formatContainer"
+          @mousemove="sliderMouseMove"
+        >
+          <div class="mobile_sign">
+            Sign(1)
           </div>
-          <div v-on:click="expandFraction" class="mobile_fraction">
-            Mantisse({{(numBits - exponentBits - 1)}}) &darr;
+          <div
+            class="mobile_exponent"
+            @click="expandExponent"
+          >
+            Exponent({{ exponentBits }}) &uarr;
+          </div>
+          <div
+            class="mobile_fraction"
+            @click="expandFraction"
+          >
+            Mantisse({{ (numBits - exponentBits - 1) }}) &darr;
           </div>
         </div>
       </div>
-      <h4>{{$t('generateEx')}}</h4>
-      <div class="divMargin"/>
-      <button v-on:click="generateExercise">{{$t('generate')}}</button>
-      <div id="exerciseField" v-html="exerciseText"></div>
-      <h4>{{$t('ownSolution')}}</h4>
+      <h4>{{ $t('generateEx') }}</h4>
+      <div class="divMargin" />
+      <button @click="generateExercise">
+        {{ $t('generate') }}
+      </button>
+      <div
+        id="exerciseField"
+        v-html="exerciseText"
+      />
+      <h4>{{ $t('ownSolution') }}</h4>
       <div class="solutionArea">
         <div class="solutionInput">
-          <p>{{$t('signBit')}}</p>
-          <input id="propVB" :class="backVB" v-model="propVB">
+          <p>{{ $t('signBit') }}</p>
+          <input
+            id="propVB"
+            v-model="propVB"
+            :class="backVB"
+          >
         </div>
-        <div class="divMargin"/>
+        <div class="divMargin" />
         <div class="solutionInput">
-          <p>{{$t('exponentBits')}}</p>
-          <input id="propE" :class="backE" v-model="propE">
+          <p>{{ $t('exponentBits') }}</p>
+          <input
+            id="propE"
+            v-model="propE"
+            :class="backE"
+          >
         </div>
-        <div class="divMargin"/>
+        <div class="divMargin" />
         <div class="solutionInput">
-          <p>{{$t('fractionBits')}}</p>
-          <input id="propM" :class="backM" v-model="propM">
+          <p>{{ $t('fractionBits') }}</p>
+          <input
+            id="propM"
+            v-model="propM"
+            :class="backM"
+          >
         </div>
-        <div class="divMargin"/>
-        <button id="checkSolution" @click="checkSolution">{{$t('check')}}</button>
+        <div class="divMargin" />
+        <button
+          id="checkSolution"
+          @click="checkSolution"
+        >
+          {{ $t('check') }}
+        </button>
       </div>
-      <h4>{{$t('correctSolution')}}</h4>
+      <h4>{{ $t('correctSolution') }}</h4>
       <div style="position: relative">
-        <AttentionBanner :text="$t('attSolve')"/>
+        <AttentionBanner :text="$t('attSolve')" />
         <!-- <div class="pdfGen">
           <button v-on:click="downloadPdf" v-if="this.solution">{{$t('getDescription')}}</button>
         </div> -->
       </div><div id="solution">
-        <Accordion :solutionDescription="solDescr">
-          <AccordionItem v-for="panel in solDescr" v-bind:key="panel.name">
-            <template v-slot:accordion-item-title>
-              {{panel.name}}
+        <Accordion :solution-description="solDescr">
+          <AccordionItem
+            v-for="panel in solDescr"
+            :key="panel.name"
+          >
+            <template #accordion-item-title>
+              {{ panel.name }}
             </template>
-            <template v-slot:accordion-item-body>
-              <span v-html="panel.text"></span>
+            <template #accordion-item-body>
+              <span v-html="panel.text" />
               <Accordion v-if="panel.subpanels != null">
-                <AccordionItem v-for="subpanel in panel.subpanels" v-bind:key="subpanel.name">
-                  <template v-slot:accordion-item-title>
-                    {{subpanel.name}}
+                <AccordionItem
+                  v-for="subpanel in panel.subpanels"
+                  :key="subpanel.name"
+                >
+                  <template #accordion-item-title>
+                    {{ subpanel.name }}
                   </template>
-                  <template v-slot:accordion-item-body>
-                    <span v-html="subpanel.text"></span>
+                  <template #accordion-item-body>
+                    <span v-html="subpanel.text" />
                   </template>
                 </AccordionItem>
               </Accordion>
@@ -95,7 +164,7 @@
 
 <script>
 /* eslint no-useless-escape: 0  no-case-declarations: 0 */
-import { getIEEEFromString } from '@/scripts/gti-tools';
+import { getIEEEFromString } from '@/scripts/algorithms/arithmetic/IEEE/numberIEEE';
 import AttentionBanner from './AttentionBanner.vue';
 import * as checker from '../scripts/checkSolution';
 import * as convertFormat from '../scripts/formatConversions';
@@ -216,9 +285,9 @@ export default {
     checkSolution() {
       const checkSolution = new checker.CheckSolution(this.exponentBits);
       checkSolution.checkSolution(this.solutionObject, this.propVB, this.propE, this.propM);
-      this.backVB = checkSolution.backVB;
-      this.backE = checkSolution.backE;
-      this.backM = checkSolution.backM;
+      this.backVB = checkSolution.getVBStatus();
+      this.backE = checkSolution.getEStatus();
+      this.backM = checkSolution.getMStatus();
     },
     preventGlobalMouseEvents() {
       document.body.style['pointer-events'] = 'none';
