@@ -25,7 +25,7 @@ library.add(faBars);
 library.add(faCopy);
 
 const router = createRouter({
-  history: createWebHashHistory(process.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes,
 });
 

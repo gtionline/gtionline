@@ -50,7 +50,7 @@ import japaneseFlag from '../assets/japaneseFlag.png';
 import ukraineFlag from '../assets/ukraineFlag.png';
 import portugueseFlag from '../assets/portugueseFlag.png';
 // import latinFlag from '..@/assets/latinFlag.png';
-const germanFlag = require('../assets/germanFlag.png');
+import germanFlag from '../assets/germanFlag.png';
 
 export default {
   name: 'LanguageSelect',

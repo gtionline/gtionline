@@ -4,6 +4,7 @@ module.exports = {
     node: true,
     jest: true,
     es6: true,
+    es2022: true,
   },
   extends: [
     "plugin:vue/vue3-essential",
