@@ -10,7 +10,6 @@ import {
 import hljs from 'highlight.js/lib/core';
 import latex from 'highlight.js/lib/languages/latex';
 import hljsVuePlugin from '@highlightjs/vue-plugin';
-// import VueHtmlToPaper from 'vue-html-to-paper';
 import App from './App.vue';
 import routes from './router';
 import { i18n } from './scripts/i18n';
